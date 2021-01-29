@@ -12,15 +12,29 @@ func TestHello(t *testing.T) {
 	}
 
 	t.Run("with name param", func(t *testing.T) {
-		got := Hello("Matt")
+		got := Hello("Matt", "")
 		want := "Hello, Matt"
 
 		assertString(t, got, want)
 	})
 
 	t.Run("with empty name param", func(t *testing.T) {
-		got := Hello("")
+		got := Hello("", "")
 		want := "Hello, World"
+
+		assertString(t, got, want)
+	})
+
+	t.Run("Spanish", func(t *testing.T) {
+		got := Hello("Elodie", "Spanish")
+		want := "Hola, Elodie"
+
+		assertString(t, got, want)
+	})
+
+	t.Run("French", func(t *testing.T) {
+		got := Hello("Eduardo", "French")
+		want := "Bonjour, Eduardo"
 
 		assertString(t, got, want)
 	})
