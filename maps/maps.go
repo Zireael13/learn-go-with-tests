@@ -3,8 +3,9 @@ package maps
 type DictionaryErr string
 
 const (
-	NotFoundError = DictionaryErr("Couldn't find that word")
-	WordExistsErr = DictionaryErr("Word already exists")
+	NotFoundErr     = DictionaryErr("Couldn't find that word")
+	WordExistsErr   = DictionaryErr("Word already exists")
+	WordNotExistErr = DictionaryErr("Word doesn't exist")
 )
 
 type Dictionary map[string]string
@@ -16,7 +17,7 @@ func (e DictionaryErr) Error() string {
 func (d Dictionary) Search(word string) (string, error) {
 	def, ok := d[word]
 	if !ok {
-		return "", NotFoundError
+		return "", NotFoundErr
 	}
 
 	return def, nil
@@ -26,7 +27,7 @@ func (d Dictionary) Add(hash, val string) error {
 	_, err := d.Search(hash)
 
 	switch err {
-	case NotFoundError:
+	case NotFoundErr:
 		d[hash] = val
 	case nil:
 		return WordExistsErr
@@ -39,10 +40,18 @@ func (d Dictionary) Add(hash, val string) error {
 func (d Dictionary) Update(word, def string) error {
 	_, err := d.Search(word)
 
-	if err == nil {
+	switch err {
+	case NotFoundErr:
+		return WordNotExistErr
+	case nil:
 		d[word] = def
-		return nil
+	default:
+		return err
 	}
 
-	return err
+	return nil
+}
+
+func (d Dictionary) Delete(word string) {
+	delete(d, word)
 }

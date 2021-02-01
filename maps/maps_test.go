@@ -50,7 +50,7 @@ func TestSearch(t *testing.T) {
 			t.Fatal("No error returned")
 		}
 
-		assertError(t, err, NotFoundError)
+		assertError(t, err, NotFoundErr)
 
 	})
 }
@@ -101,4 +101,18 @@ func TestUpdate(t *testing.T) {
 
 	})
 
+}
+
+func TestDelete(t *testing.T) {
+	t.Run("delete", func(t *testing.T) {
+		word := "test"
+		dict := Dictionary{word: "test def"}
+		dict.Delete(word)
+
+		_, err := dict.Search(word)
+		if err != NotFoundErr {
+			t.Errorf("Expected %q to be deleted", word)
+		}
+
+	})
 }
