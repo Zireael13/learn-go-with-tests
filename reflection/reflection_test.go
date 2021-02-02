@@ -127,4 +127,44 @@ func TestWalk(t *testing.T) {
 		assertContains(t, got, "Peek")
 	})
 
+	t.Run("Channels", func(t *testing.T) {
+		aChannel := make(chan Profile)
+
+		go func() {
+			aChannel <- Profile{33, "SF"}
+			aChannel <- Profile{21, "LA"}
+			close(aChannel)
+		}()
+
+		var got []string
+
+		want := []string{"SF", "LA"}
+
+		walk(aChannel, func(input string) {
+			got = append(got, input)
+		})
+
+		if !reflect.DeepEqual(got, want) {
+			t.Errorf("got %v, want %v", got, want)
+		}
+	})
+
+	t.Run("func", func(t *testing.T) {
+		aFunc := func() (Profile, Profile) {
+			return Profile{12, "Seattle"}, Profile{59, "Austin"}
+		}
+
+		var got []string
+
+		want := []string{"Seattle", "Austin"}
+
+		walk(aFunc, func(input string) {
+			got = append(got, input)
+		})
+
+		if !reflect.DeepEqual(got, want) {
+			t.Errorf("got %v, want %v", got, want)
+		}
+	})
+
 }
